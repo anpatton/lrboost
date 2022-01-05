@@ -8,12 +8,14 @@ LRBoost is a [sckit-learn](https://scikit-learn.org/) compatible package for lin
 * ``.predict()`` returns an array-like of final predictions
 * ``.predict_detail()`` returns a dictionary with the linear, non-linear, and final predictions.
 
-    >>> from sklearn.datasets import load_iris
-    >>> from lrboost import LRBoostRegressor
-    >>> X, y = load_iris(return_X_y=True)
-    >>> lrb = LRBoostRegressor.fit(X, y)
-    >>> predictions = lrb.predict(X)
-    >>> detailed_predictions = lrb.predict_detail(X)
+```python
+from sklearn.datasets import load_iris
+from lrboost import LRBoostRegressor
+X, y = load_iris(return_X_y=True)
+lrb = LRBoostRegressor.fit(X, y)
+predictions = lrb.predict(X)
+detailed_predictions = lrb.predict_detail(X)
+```
 
 [More detailed documentation can be found here!](https://readthedocs.org/projects/lrboost) 
 
