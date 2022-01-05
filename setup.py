@@ -13,7 +13,7 @@ with open(ver_file) as f:
 
 DISTNAME = 'LRBoost'
 DESCRIPTION = 'Linear Residual Boosting compatible with scikit-learn.'
-with codecs.open('README.rst', encoding='utf-8-sig') as f:
+with codecs.open('README.md, encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'A. Patton, K. Medvedovsky'
 MAINTAINER_EMAIL = 'apatton@gmail.com, bibigon@gmail.com'
