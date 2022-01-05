@@ -16,7 +16,7 @@ LRBoost - Linear Residual Boosting with scikit-learn
 
 * LRBoostRegressor can be used like any other sklearn estimator and is built off a sklearn template.
 * ``predict`` returns an array-like of final predictions
-* ``predict_detail`` returns a dictionary with the base linear estimator predictions (base), tree-based predictions (resid), and then the difference of the two (pred). 
+* ``predict_detail`` returns a dictionary with the linear, non-linear, and final predictions.
 * ``predict(X)`` and ``predict_detail(X)['pred']`` are equivalent values
 
     >>> from sklearn.datasets import load_iris
