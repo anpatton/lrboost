@@ -2,6 +2,7 @@ from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.linear_model import RidgeCV
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
+from typing import Dict
 
 class LRBoostRegressor():
     def __init__(self, linear_model=RidgeCV(), non_linear_model=HistGradientBoostingRegressor()):
@@ -9,6 +10,11 @@ class LRBoostRegressor():
         self.non_linear_model = non_linear_model
 
     def __sklearn_is_fitted__(self):
+        """Internal sklearn helper that indicates the object has been fitted
+
+        Returns:
+            bool: True 
+        """
         return True
 
     def fit(self, X, y, sample_weight=None):
