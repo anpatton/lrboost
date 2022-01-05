@@ -19,10 +19,10 @@ Getting Started
 LRBoostRegressor works in three steps.
 
 * Fit a linear model to a target ``y``
-* Fit a tree-based model to the residual (``y_resid``) of the linear model 
+* Fit a tree-based model to the residual (``y_pred - y``) of the linear model 
 * Combine the two predictions into a final prediction in the scale of the original target
 
-LRBoostRegressor defaults to ``RidgeCV`` and ``HistGradientBoostingRegressor`` as the linear and tree model respectively.
+LRBoostRegressor defaults to ``sklearn.linear_model.RidgeCV()`` and ``sklearn.ensemble.HistGradientBoostingRegressor()`` as the linear and non-linear model respectively.
 
     >>> from sklearn.datasets import load_iris
     >>> from lrboost import LRBoostRegressor
@@ -31,11 +31,12 @@ LRBoostRegressor defaults to ``RidgeCV`` and ``HistGradientBoostingRegressor`` a
     >>> predictions = lrb.predict(X)
     >>> detailed_predictions = lrb.predict_detail(X)
 
-The linear and tree models are both fit in the ``fit()`` method and used to then predict on any new data. Because lrboost is a very slightly modified scklearn class, you can hyperparameter tune the tree model as you would normally.
+The linear and non-linear models are both fit in the ``fit()`` method and used to then predict on any new data. Because lrboost is a very slightly modified scklearn class, you can hyperparameter tune the tree model as you would normally.
 
-* ``predict`` returns an array-like of final predictions
-* ``predict_detail`` returns a dictionary with the base linear estimator predictions (base), tree-based predictions (resid), and then the difference of the two (pred). 
-* ``predict(X)`` and ``predict_detail(X)['pred']`` are equivalent values
+* ``.predict(X)`` returns an array-like of final predictions
+* ``.predict_detail(X)`` returns a dictionary with the base linear estimator predictions (base), tree-based predictions (resid), and then the difference of the two (pred). 
+* ``.predict(X)`` and ``.predict_detail(X)['pred']`` are equivalent values
+* ``.predict_proba(X)`` will provide probabilistic predictions associated with ``NGBoost`` or ``XGBoost-Distribution`` as the non-linear estimators.
 
 Any sklearn compatible estimator can be used with LRBoost, and you can unpack kwargs as needed.
 

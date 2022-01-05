@@ -17,6 +17,6 @@ predictions = lrb.predict(X)
 detailed_predictions = lrb.predict_detail(X)
 ```
 
-[More detailed documentation can be found here!](https://readthedocs.org/projects/lrboost) 
+[More detailed documentation can be found here!](https://lrboost.readthedocs.io/en/latest/) 
 
 *Andrew Patton & Kostya Medvedovsky*
