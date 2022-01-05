@@ -5,7 +5,7 @@
 .. |ReadTheDocs| image:: https://readthedocs.org/projects/lrboost/badge/?version=latest
 .. _ReadTheDocs: https://lrboost.readthedocs.io/en/latest/?badge=latest
 
-lrboost - Linear Residual Boosting with scikit-learn
+LRBoost - Linear Residual Boosting with scikit-learn
 ============================================================
 
 .. _scikit-learn: https://scikit-learn.org
