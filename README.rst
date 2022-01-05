@@ -1,6 +1,6 @@
 .. -*- mode: rst -*-
 
-.. image:: images/lrboost.png
+.. image:: doc/images/lrboost.png
    :width: 600
 
 .. |ReadTheDocs| image:: https://readthedocs.org/projects/lrboost/badge/?version=latest
