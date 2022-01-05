@@ -26,6 +26,6 @@ LRBoost - Linear Residual Boosting with scikit-learn
     >>> predictions = lrb.predict(X)
     >>> detailed_predictions = lrb.predict_detail(X)
 
-More detailed documentation can be found at ReadTheDocs_. 
+More detailed documentation can be found here -> https://readthedocs.org/projects/lrboost. 
 
 *Andrew Patton & Kostya Medvedovsky*
