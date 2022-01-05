@@ -1,6 +1,7 @@
 .. -*- mode: rst -*-
 
-|ReadTheDocs|_
+.. image:: images/lrboost.png
+   :width: 600
 
 .. |ReadTheDocs| image:: https://readthedocs.org/projects/lrboost/badge/?version=latest
 .. _ReadTheDocs: https://lrboost.readthedocs.io/en/latest/?badge=latest
