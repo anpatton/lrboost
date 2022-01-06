@@ -67,3 +67,6 @@ doc/generated/
 target/
 
 .DS_Store
+
+# venv
+/venv
