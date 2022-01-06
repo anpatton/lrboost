@@ -116,33 +116,52 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         y,
         tuner,
         param_distributions,
-        fit_params=None,
+        sample_weight=None,
+        primary_fit_params=None,
+        secondary_fit_params=None,
         *tuner_args,
         **tuner_kwargs
     ):
-        if fit_params is None:
-            fit_params = {}
-        self._fit_primary_model(X, y, **fit_params)
+        if primary_fit_params is None:
+            primary_fit_params = {}
+
+        if (
+            "sample_weight" in primary_fit_params
+            or "sample_weight" in secondary_fit_params
+        ) and sample_weight is not None:
+            raise Exception("Conflicting sample weights.")
+
+        self._fit_primary_model(X, y, sample_weight=sample_weight, **primary_fit_params)
         self._tune_secondary_model(
             tuner,
             param_distributions,
             X,
             y,
             *tuner_args,
-            fit_params=fit_params,
+            sample_weight=sample_weight,
+            fit_params=secondary_fit_params,
             **tuner_kwargs
         )
 
     def _tune_secondary_model(
-        self, tuner, param_distributions, X, y, *args, fit_params=None, **kwargs
+        self,
+        tuner,
+        param_distributions,
+        X,
+        y,
+        *tuner_args,
+        sample_weight=None,
+        secondary_fit_params=None,
+        **tuner_kwargs
     ):
         check_is_fitted(self.primary_model)
-        if fit_params is None:
-            fit_params = {}
+        if secondary_fit_params is None:
+            secondary_fit_params = {}
 
-        """In lieu of implementing sklearn compatibility which would require an API change to allow frozen estimators"""
         self.secondary_model = (
-            tuner(self.secondary_model, param_distributions, *args, **kwargs)
-            .fit(X, y, **fit_params)
+            tuner(
+                self.secondary_model, param_distributions, *tuner_args, **tuner_kwargs
+            )
+            .fit(X, y, sample_weight=sample_weight, **secondary_fit_params)
             .best_estimator_
         )
