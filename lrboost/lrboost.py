@@ -36,8 +36,8 @@ class LRBoostRegressor:
             self: [description]
         """
         self.linear_model.fit(X, y, sample_weight=sample_weight)
-        self.linear_predicted = self.linear_model.predict(X)
-        self.linear_residual = np.subtract(self.linear_predicted, y)
+        self.linear_prediction = self.linear_model.predict(X)
+        self.linear_residual = np.subtract(self.linear_prediction, y)
         self.non_linear_model.fit(
             X, y=self.linear_residual, sample_weight=sample_weight
         )
@@ -54,9 +54,9 @@ class LRBoostRegressor:
             np.array: [description]
         """
         check_is_fitted(self)
-        non_linear_predicted = self.non_linear_model.predict(X)
+        non_linear_prediction = self.non_linear_model.predict(X)
 
-        return np.add(non_linear_predicted, self.linear_predicted)
+        return np.add(non_linear_prediction, self.linear_prediction)
 
     def predict_detail(self, X) -> Dict:
         """[summary]
@@ -71,9 +71,9 @@ class LRBoostRegressor:
         non_linear_prediction = self.non_linear_model.predict(X)
 
         res = {
-            "linear_prediction": self.linear_predicted,
+            "linear_prediction": self.linear_prediction,
             "non_linear_prediction": non_linear_prediction,
-            "prediction": np.add(non_linear_prediction, self.linear_predicted),
+            "prediction": np.add(non_linear_prediction, self.linear_prediction),
         }
 
         return res
