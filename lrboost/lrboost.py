@@ -1,9 +1,9 @@
+import numpy as np
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.linear_model import RidgeCV
-import numpy as np
 from sklearn.utils.validation import check_is_fitted
+from sklearn.base import BaseEstimator, RegressorMixin
 from typing import Dict
-from sklearn.base import BaseEstimator, RegressorMixin, TransformerMixin
 
 
 class LRBoostRegressor(RegressorMixin, BaseEstimator):
@@ -27,7 +27,7 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         return True
 
     def fit(self, X, y, sample_weight=None):
-        """Fits both the primary and non-primary estimator and returns fitted LRBoostRegressor
+        """Fits both the primary and secondary estimator and returns fitted LRBoostRegressor
 
         Args:
             X (array-like): Input features
@@ -55,11 +55,13 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         """[summary]
 
         Args:
-            X ([type]): [description]
-            detail (bool, optional): [description]. Defaults to False.
+            X (array-type): Input features
+            detail (bool, optional):  Flag to include primary and secondary predictions.
+                Defaults to False.
 
         Returns:
-            [type]: [description]
+            Dict: If detail=True with primary, secondary, and final predictions.
+            np.array: If detail=False just final predictions.
         """
         check_is_fitted(self)
         primary_prediction = self.primary_model.predict(X)
@@ -76,7 +78,7 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
             preds = {
                 "primary_prediction": primary_prediction,
                 "secondary_prediction": secondary_prediction,
-                "prediction": np.subtract(primary_prediction, secondary_prediction),
+                "final_prediction": np.subtract(primary_prediction, secondary_prediction),
             }
 
         else:
@@ -84,14 +86,17 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
 
         return preds
 
-    def predict_dist(self, X):
+    def predict_dist(self, X) -> tuple:
         """[summary]
 
         Args:
-            X ([type]): [description]
+            X (array-like): Input features
+
+        Raises:
+            Exception: Throws error if non probabilistic model used. 
 
         Returns:
-            np.array: [description]
+            tuple: final prediction, sd of secondary prediction
         """
         check_is_fitted(self)
 
@@ -102,13 +107,13 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
 
         if self.secondary_type == "NGBRegressor":
             preds = self.secondary_model.pred_dist(X)
-            final_preds = np.add(preds.loc, self.primary_model.predict(X))
-            return final_preds, preds.scale
+            final_prediction = np.add(preds.loc, self.primary_model.predict(X))
+            return final_prediction, preds.scale
 
         if self.secondary_type == "XGBDistribution":
             preds = self.secondary_model.predict(X)
-            final_preds = np.add(preds.loc, self.primary_model.predict(X))
-            return final_preds, preds.scale
+            final_prediction = np.add(preds.loc, self.primary_model.predict(X))
+            return final_prediction, preds.scale
 
     def fit_and_tune(
         self,
@@ -120,6 +125,15 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         *tuner_args,
         **tuner_kwargs
     ):
+        """[summary]
+
+        Args:
+            X (array-like): Input features
+            y (array-like): Raw target
+            tuner ([type]): [description]
+            param_distributions ([type]): [description]
+            fit_params ([type], optional): [description]. Defaults to None.
+        """
         if fit_params is None:
             fit_params = {}
         self._fit_primary_model(X, y, **fit_params)
