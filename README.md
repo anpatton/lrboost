@@ -12,9 +12,15 @@ LRBoost is a [sckit-learn](https://scikit-learn.org/) compatible package for lin
 from sklearn.datasets import load_iris
 from lrboost import LRBoostRegressor
 X, y = load_iris(return_X_y=True)
-lrb = LRBoostRegressor.fit(X, y)
+lrb = LRBoostRegressor().fit(X, y)
 predictions = lrb.predict(X)
 detailed_predictions = lrb.predict_detail(X)
+
+print(lrb.primary_model.score(X, y))
+print(lrb.score(X, y))
+
+>>> 0.9300877432471795
+>>> 0.976761983106908
 ```
 
 [More detailed documentation can be found here!](https://lrboost.readthedocs.io/en/latest/) 
