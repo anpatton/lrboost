@@ -6,15 +6,13 @@ from typing import Dict
 
 
 class LRBoostRegressor:
-    def __init__(
-        self, linear_model=None, non_linear_model=None
-    ):
+    def __init__(self, linear_model=None, non_linear_model=None):
         if linear_model is None:
             linear_model = RidgeCV()
-            
+
         if non_linear_model is None:
             non_linear_model = HistGradientBoostingRegressor()
-        
+
         self.linear_model = linear_model
         self.non_linear_model = non_linear_model
 
