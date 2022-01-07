@@ -57,14 +57,53 @@ Any sklearn compatible estimator can be used with LRBoost, and you can unpack kw
     >>> lrb = LRBoostRegressor.fit(X, y)
     >>> predictions = lrb.predict(X)
 
+* LRBoost is not going to magically provide improved error in all circumstances.
+* Situations with extrapolation outside of the training dataset might be particularly useful.
+
 Hyperparamter Tuning
 -------------------------------------
 
-Model Comparison
+
+Model Comparison - Example 1
 -------------------------------------
 
-* LRBoost is not going to magically provide improved error in all circumstances.
-* Situations with extrapolation outside of the training dataset might be particularly useful.
+* This is a (simplified) example of predicting clutch minutes from non-clutch minutes in NBA basketball.
+* It has a known linear and non-linear combination and extrapolation can be difficult.
+
+.. image:: images/clutch.png
+  :width: 300
+
+   >>> import pandas as pd
+   >>> import numpy as np
+   >>> from sklearn.metrics import mean_squared_error
+   >>> from sklearn.ensemble import HistGradientBoostingRegressor
+   >>> clutch = pd.read_csv('../examples/clutch.csv')
+   >>> train_mask = (clutch['nonclutch_min'] <= 4000) & (clutch['nonclutch_min'] >= 750)
+   >>> train = clutch[train_mask]
+   >>> test = clutch[~train_mask]
+   >>> X_train = train[['nonclutch_min']]
+   >>> y_train = train['clutch_min']
+   >>> X_test = test[['nonclutch_min']]
+   >>> y_test = test['clutch_min']
+   >>> gbm = HistGradientBoostingRegressor(max_iter=500, random_state=42).fit(X_train, y_train)
+   >>> lrb = LRBoostRegressor(secondary_model=HistGradientBoostingRegressor(max_iter=500, random_state=42)).fit(X_train, y_train)
+   >>> print(f"Ridge RMSE: {round(mean_squared_error(lrb.primary_model.predict(X_test), y_test), 2)}")
+   >>> print(f"HistGradientBoostingRegressor RMSE: {round(mean_squared_error(gbm.predict(X_test), y_test), 2)}")
+   >>> print(f"LRBoost RMSE: {round(mean_squared_error(lrb.predict(X_test), y_test), 2)}")
+   >>> Ridge RMSE: 1385.81
+   >>> HistGradientBoostingRegressor RMSE: 3145.87
+   >>> LRBoost RMSE: 1080.42
+
+   If we also attempt a general train/test split, LRBoost performs well.
+
+   >>> Ridge RMSE: 570.01
+   >>> HistGradientBoostingRegressor RMSE: 743.66
+   >>> LRBoost RMSE: 733.4
+   
+
+Model Comparison - Example 2
+-------------------------------------
+
 * The following are some simple examples taken from `Zhang et al. (2019) <https://arxiv.org/abs/1904.10416v1>`_
 
    >>> import pandas as pd
