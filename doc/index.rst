@@ -70,9 +70,6 @@ Model Comparison - Example 1
 * This is a (simplified) example of predicting clutch minutes from non-clutch minutes in NBA basketball.
 * It has a known linear and non-linear combination and extrapolation can be difficult.
 
-.. image:: images/clutch.png
-  :width: 300
-
    >>> import pandas as pd
    >>> import numpy as np
    >>> from sklearn.metrics import mean_squared_error
@@ -113,24 +110,21 @@ Model Comparison - Example 2
    >>> from sklearn.model_selection import train_test_split
    >>> from sklearn.datasets import make_regression
    >>> from sklearn.linear_model import LassoCV
-
    >>> concrete = pd.read_csv("../examples/concrete_data.csv")
    >>> features = ['cement', 'slag', 'fly_ash', 'water', 'superplastic', 'coarse_agg', 'fine_agg', 'age', 'cw_ratio']
    >>> target = 'ccs'
-
    >>> def evaluate_models(X_train, X_test, y_train, y_test):
-      lrb = LRBoostRegressor(primary_model=RidgeCV(alphas=np.logspace(-4, 3, 10, endpoint=True)))
-      lrb.fit(X_train, y_train.ravel())
-      detailed_predictions = lrb.predict(X_test, detail=True)
-      primary_predictions = detailed_predictions['primary_prediction']
-      rb_predictions = detailed_predictions['final_prediction']
-      hgb = HistGradientBoostingRegressor()
-      hgb.fit(X_train, y_train.ravel())
-      hgb_predictions = hgb.predict(X_test)
-      print(f"Ridge RMSE: {round(mean_squared_error(primary_predictions, y_test.ravel()), 2)}")
-      print(f"HistGradientBoostingRegressor RMSE: {round(mean_squared_error(hgb_predictions, y_test.ravel()), 2)}")
-      print(f"LRBoost RMSE: {round(mean_squared_error(lrb_predictions, y_test.ravel()), 2)}")
-   
+      >>> lrb = LRBoostRegressor(primary_model=RidgeCV(alphas=np.logspace(-4, 3, 10, endpoint=True)))
+      >>> lrb.fit(X_train, y_train.ravel())
+      >>> detailed_predictions = lrb.predict(X_test, detail=True)
+      >>> primary_predictions = detailed_predictions['primary_prediction']
+      >>> rb_predictions = detailed_predictions['final_prediction']
+      >>> hgb = HistGradientBoostingRegressor()
+      >>> hgb.fit(X_train, y_train.ravel())
+      >>> hgb_predictions = hgb.predict(X_test)
+      >>> print(f"Ridge RMSE: {round(mean_squared_error(primary_predictions, y_test.ravel()), 2)}")
+      >>> print(f"HistGradientBoostingRegressor RMSE: {round(mean_squared_error(hgb_predictions, y_test.ravel()), 2)}")
+      >>> print(f"LRBoost RMSE: {round(mean_squared_error(lrb_predictions, y_test.ravel()), 2)}")
    
    >>> # Scenario 1: 75/25 train/test (Interpolation)
    >>> X_train, X_test, y_train, y_test = train_test_split(concrete[features], 
