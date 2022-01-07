@@ -19,9 +19,9 @@ Getting Started
 LRBoostRegressor works in three steps.
 
 * Fit a linear model to a target ``y``
-     *  This is the primary model accesible via LRBoost.primary_model 
+     *  This is the primary model accesible via ``LRBoost.primary_model`` 
 * Fit a tree-based model to the residual (``y_pred - y``) of the linear model 
-     *  This is the secondary model accesible via LRBoost.secondary_model 
+     *  This is the secondary model accesible via ``LRBoost.secondary_model`` 
 * Combine the two predictions into a final prediction in the scale of the original target
 
 LRBoostRegressor defaults to ``sklearn.linear_model.RidgeCV()`` and ``sklearn.ensemble.HistGradientBoostingRegressor()`` as the linear (primary) and non-linear (secondary) model respectively.
