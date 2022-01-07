@@ -70,6 +70,11 @@ Model Comparison - Example 1
 * This is a (simplified) example of predicting clutch minutes from non-clutch minutes in NBA basketball.
 * It has a known linear and non-linear combination and extrapolation can be difficult.
 
+.. image:: images/clutch.png
+   :width: 600
+
+* Using the above test/train split we can show an extrapolation task on the tails of the distribution.
+
    >>> import pandas as pd
    >>> import numpy as np
    >>> from sklearn.metrics import mean_squared_error
@@ -108,8 +113,6 @@ Model Comparison - Example 2
    >>> from sklearn.metrics import mean_squared_error
    >>> from sklearn.ensemble import HistGradientBoostingRegressor
    >>> from sklearn.model_selection import train_test_split
-   >>> from sklearn.datasets import make_regression
-   >>> from sklearn.linear_model import LassoCV
    >>> concrete = pd.read_csv("../examples/concrete_data.csv")
    >>> features = ['cement', 'slag', 'fly_ash', 'water', 'superplastic', 'coarse_agg', 'fine_agg', 'age', 'cw_ratio']
    >>> target = 'ccs'
