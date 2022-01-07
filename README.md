@@ -2,7 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/lrboost/badge/?version=latest)](https://lrboost.readthedocs.org)
 
-LRBoost is a [sckit-learn](https://scikit-learn.org/) compatible package for linear residual boosting. LRBoost combines a linear estimator and a non-linear estimator to leverage the strengths of both models. We find that extrapolation tasks or data with linear and non-linear components are the best use cases. Not every modeling task will benefit from LRBoost. 
+LRBoost is a [sckit-learn](https://scikit-learn.org/) compatible package for linear residual boosting. LRBoost combines a linear estimator and a non-linear estimator to leverage the strengths of both models. We find that extrapolation tasks or data with linear and non-linear components are the best use cases. Not every modeling task will benefit from LRBoost, but we use this in our own work and wanted to share something that made it easy to use.  
 
 LRBoost was inspired by ['Regression-Enhanced Random Forests' by Haozhe Zhang, Dan Nettleton, and Zhengyuan Zhu.](https://arxiv.org/abs/1904.10416v1).
 
@@ -27,4 +27,4 @@ print(lrb.score(X, y)) #R2
 
 [More detailed documentation can be found here!](https://lrboost.readthedocs.io/en/latest/) 
 
-*Andrew Patton & Kostya Medvedovsky*
+*[Andrew Patton](https://twitter.com/anpatt7), [Kostya Medvedovsky](https://twitter.com/kmedved), and [Nathan Walker](https://twitter.com/bbstats)*
