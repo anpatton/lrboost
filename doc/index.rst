@@ -1,7 +1,7 @@
 .. lrboost documentation master file, created by
    sphinx-quickstart on Mon Jan 4 14:44:12 2022.
 
-Welcome to LRBoost's documentation!
+Welcome to lrboost's documentation!
 ============================================
 
 lrboost is an scikit-learn compatible simple stacking protocol for prediction.
@@ -19,9 +19,9 @@ Getting Started
 LRBoostRegressor works in three steps.
 
 * Fit a linear model to a target ``y``
-     *  This is the primary model accesible via ``LRBoost.primary_model`` 
+     *  This is the primary model accesible via ``lrboost.primary_model`` 
 * Fit a tree-based model to the residual (``y_pred - y``) of the linear model 
-     *  This is the secondary model accesible via ``LRBoost.secondary_model`` 
+     *  This is the secondary model accesible via ``lrboost.secondary_model`` 
 * Combine the two predictions into a final prediction in the scale of the original target
 
 LRBoostRegressor defaults to ``sklearn.linear_model.RidgeCV()`` and ``sklearn.ensemble.HistGradientBoostingRegressor()`` as the linear (primary) and non-linear (secondary) model respectively.
@@ -42,7 +42,7 @@ The linear and non-linear models are both fit in the ``fit()`` method and used t
 * ``predict(X)`` returns an array-like of final predictions with an option for ``predict(X, detail=True)`` 
 * ``predict_dist(X)`` provides probabilistic predictions associated with ``NGBoost`` or ``XGBoost-Distribution`` as the non-linear estimators.
 
-Any sklearn compatible estimator can be used with LRBoost, and you can unpack kwargs as needed.
+Any sklearn compatible estimator can be used with lrboost, and you can unpack kwargs as needed.
 
     >>> from sklearn.datasets import load_iris
     >>> from sklearn.ensemble import RandomForestRegressor 
@@ -57,7 +57,7 @@ Any sklearn compatible estimator can be used with LRBoost, and you can unpack kw
     >>> lrb = LRBoostRegressor.fit(X, y)
     >>> predictions = lrb.predict(X)
 
-* LRBoost is not going to magically provide improved error in all circumstances.
+* lrboost is not going to magically provide improved error in all circumstances.
 * Situations with extrapolation outside of the training dataset might be particularly useful.
 
 Hyperparamter Tuning
@@ -91,16 +91,16 @@ Model Comparison - Example 1
    >>> lrb = LRBoostRegressor(secondary_model=HistGradientBoostingRegressor(max_iter=500, random_state=42)).fit(X_train, y_train)
    >>> print(f"Ridge RMSE: {round(mean_squared_error(lrb.primary_model.predict(X_test), y_test), 2)}")
    >>> print(f"HistGradientBoostingRegressor RMSE: {round(mean_squared_error(gbm.predict(X_test), y_test), 2)}")
-   >>> print(f"LRBoost RMSE: {round(mean_squared_error(lrb.predict(X_test), y_test), 2)}")
+   >>> print(f"lrboost RMSE: {round(mean_squared_error(lrb.predict(X_test), y_test), 2)}")
    >>> Ridge RMSE: 1385.81
    >>> HistGradientBoostingRegressor RMSE: 3145.87
-   >>> LRBoost RMSE: 1080.42
+   >>> lrboost RMSE: 1080.42
 
-   If we also attempt a general train/test split, LRBoost performs well.
+   If we also attempt a general train/test split, lrboost performs well.
 
    >>> Ridge RMSE: 570.01
    >>> HistGradientBoostingRegressor RMSE: 743.66
-   >>> LRBoost RMSE: 733.4
+   >>> lrboost RMSE: 733.4
    
 
 Model Comparison - Example 2
@@ -127,7 +127,7 @@ Model Comparison - Example 2
       >>> hgb_predictions = hgb.predict(X_test)
       >>> print(f"Ridge RMSE: {round(mean_squared_error(primary_predictions, y_test.ravel()), 2)}")
       >>> print(f"HistGradientBoostingRegressor RMSE: {round(mean_squared_error(hgb_predictions, y_test.ravel()), 2)}")
-      >>> print(f"LRBoost RMSE: {round(mean_squared_error(lrb_predictions, y_test.ravel()), 2)}")
+      >>> print(f"lrboost RMSE: {round(mean_squared_error(lrb_predictions, y_test.ravel()), 2)}")
    
    >>> # Scenario 1: 75/25 train/test (Interpolation)
    >>> X_train, X_test, y_train, y_test = train_test_split(concrete[features], 
@@ -136,7 +136,7 @@ Model Comparison - Example 2
    >>> evaluate_models(X_train, X_test, y_train, y_test)
    >>> # Ridge RMSE: 112.4
    >>> # HistGradientBoostingRegressor RMSE: 26.33
-   >>> # LRBoost RMSE: 25.06
+   >>> # lrboost RMSE: 25.06
 
    >>> # Scenario 2: 50/50 train/test (Interpolation)
    >>> X_train, X_test, y_train, y_test = train_test_split(concrete[features], 
@@ -145,7 +145,7 @@ Model Comparison - Example 2
    >>> evaluate_models(X_train, X_test, y_train, y_test)
    >>> # Ridge RMSE: 107.6
    >>> # HistGradientBoostingRegressor RMSE: 26.6
-   >>> # LRBoost RMSE: 23.55
+   >>> # lrboost RMSE: 23.55
 
    >>> # Scenario 3: Training: CCS > 25, Testing: CCS <= 25 (Extrapolation)
    >>> train = concrete.loc[concrete['ccs'] > 25]
@@ -157,6 +157,6 @@ Model Comparison - Example 2
    >>> evaluate_models(X_train, X_test, y_train, y_test)
    >>> # Ridge RMSE: 89.26
    >>> # HistGradientBoostingRegressor RMSE: 4.21
-   >>> # LRBoost RMSE: 3.7
+   >>> # lrboost RMSE: 3.7
 
-* With zero tuning of either the LRBoost internal GBDT fit to the residual or the "standard" GBDT, LRBoost performs well.
+* With zero tuning of either the lrboost internal GBDT fit to the residual or the "standard" GBDT, lrboost performs well.

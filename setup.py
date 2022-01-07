@@ -11,7 +11,7 @@ ver_file = os.path.join('lrboost', '_version.py')
 with open(ver_file) as f:
     exec(f.read())
 
-DISTNAME = 'LRBoost'
+DISTNAME = 'lrboost'
 DESCRIPTION = 'Linear Residual Boosting compatible with scikit-learn.'
 with codecs.open('README.md', encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()

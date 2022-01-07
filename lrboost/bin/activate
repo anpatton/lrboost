@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/andrewpatton/Dropbox/Active Projects/LRBoost/LRBoost"
+VIRTUAL_ENV="/Users/andrewpatton/Dropbox/Active Projects/lrboost/lrboost"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
@@ -54,8 +54,8 @@ fi
 
 if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT:-}" ] ; then
     _OLD_VIRTUAL_PS1="${PS1:-}"
-    if [ "x(LRBoost) " != x ] ; then
-	PS1="(LRBoost) ${PS1:-}"
+    if [ "x(lrboost) " != x ] ; then
+	PS1="(lrboost) ${PS1:-}"
     else
     if [ "`basename \"$VIRTUAL_ENV\"`" = "__" ] ; then
         # special case for Aspen magic directories

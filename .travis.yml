@@ -44,7 +44,7 @@ script:
   - pytest -v doc/*rst
   - mkdir for_test
   - cd for_test
-  - pytest -v --cov=lrboost --pyargs LRBoost
+  - pytest -v --cov=lrboost --pyargs lrboost
 
 after_success:
   - codecov

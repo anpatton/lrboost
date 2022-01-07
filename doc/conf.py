@@ -77,7 +77,7 @@ plot_gallery = True
 master_doc = 'index'
 
 # General information about the project.
-project = u'LRBoost'
+project = u'lrboost'
 copyright = u'2022, Andrew Patton'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -234,7 +234,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'LRBoost.tex', u'lrboost Documentation',
+  ('index', 'lrboost.tex', u'lrboost Documentation',
    u'Andrew Patton', 'manual'),
 ]
 
@@ -264,7 +264,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'LRBoost', u'lrboost Documentation',
+    ('index', 'lrboost', u'lrboost Documentation',
      [u'Andrew Patton'], 1)
 ]
 
@@ -309,10 +309,10 @@ intersphinx_mapping = {
 
 # sphinx-gallery configuration
 sphinx_gallery_conf = {
-    'doc_module': 'LRBoost',
+    'doc_module': 'lrboost',
     'backreferences_dir': os.path.join('generated'),
     'reference_url': {
-        'LRBoost': None}
+        'lrboost': None}
 }
 
 def setup(app):

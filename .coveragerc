@@ -2,8 +2,8 @@
 
 [run]
 branch = True
-source = LRBoost
-include = */LRBoost/*
+source = lrboost
+include = */lrboost/*
 omit =
     */setup.py
 

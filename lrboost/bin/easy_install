@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/Users/andrewpatton/Dropbox/Active Projects/LRBoost/LRBoost/bin/python3" "$0" "$@"
+'''exec' "/Users/andrewpatton/Dropbox/Active Projects/lrboost/lrboost/bin/python3" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
