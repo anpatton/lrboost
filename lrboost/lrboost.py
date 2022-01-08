@@ -5,7 +5,6 @@ from sklearn.utils.validation import check_is_fitted
 from sklearn.base import BaseEstimator, RegressorMixin
 from typing import Dict
 
-
 class LRBoostRegressor(RegressorMixin, BaseEstimator):
     def __init__(self, primary_model=None, secondary_model=None):
         if primary_model is None:
