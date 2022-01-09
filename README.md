@@ -20,7 +20,7 @@ lrboost was inspired by ['Regression-Enhanced Random Forests' by Haozhe Zhang, D
 ```python
 from sklearn.datasets import load_diabetes
 from lrboost import LRBoostRegressor
-X, y = load_iris(return_X_y=True)
+X, y = load_diabetes(return_X_y=True)
 lrb = LRBoostRegressor().fit(X, y)
 predictions = lrb.predict(X)
 detailed_predictions = lrb.predict(X, detail=True)
