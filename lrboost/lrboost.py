@@ -3,6 +3,7 @@ from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.linear_model import RidgeCV
 from sklearn.utils.validation import check_is_fitted
 from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.preprocessing import FunctionTransformer
 from typing import Dict
 
 class LRBoostRegressor(RegressorMixin, BaseEstimator):
@@ -25,7 +26,7 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         """
         return True
 
-    def fit(self, X, y, sample_weight=None):
+    def fit(self, X, y, sample_weight=None, primary_scaler=FunctionTransformer()):
         """Fits both the primary and secondary estimator and returns fitted LRBoostRegressor
 
         Args:
@@ -33,19 +34,22 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
             y (array-like): Raw target
             sample_weight (array-like, optional): Sample weights for estimators.
                 Only accepts one weight for both. Defaults to None.
+            primary_scaler (FunctionTransformer): Scaling function from sklearn. Defaults to FunctionTransformer().
 
         Returns:
             self: Fitted LRBoostRegressor
         """
-        self._fit_primary_model(X, y, sample_weight=sample_weight)
+        self._fit_primary_model(X, y, primary_scaler=primary_scaler, sample_weight=sample_weight)
         self.primary_residual = np.subtract(self.primary_prediction, y)
         self._fit_secondary_model(X, self.primary_residual, sample_weight=sample_weight)
 
         return self
 
-    def _fit_primary_model(self, X, y, sample_weight=None):
-        self.primary_model.fit(X, y, sample_weight=sample_weight)
-        self.primary_prediction = self.primary_model.predict(X)
+    def _fit_primary_model(self, X, y, primary_scaler, sample_weight=None):
+        X_scaled = primary_scaler.fit_transform(X)
+        self.primary_model.fit(X_scaled, y, sample_weight=sample_weight)
+        self.primary_prediction = self.primary_model.predict(X_scaled)
+        self.primary_scaler = primary_scaler
 
     def _fit_secondary_model(self, X, y, sample_weight=None):
         self.secondary_model.fit(X, y, sample_weight=sample_weight)
