@@ -6,6 +6,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.preprocessing import FunctionTransformer
 from typing import Dict
 
+
 class LRBoostRegressor(RegressorMixin, BaseEstimator):
     def __init__(self, primary_model=None, secondary_model=None):
         if primary_model is None:
@@ -39,7 +40,9 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         Returns:
             self: Fitted LRBoostRegressor
         """
-        self._fit_primary_model(X, y, primary_scaler=primary_scaler, sample_weight=sample_weight)
+        self._fit_primary_model(
+            X, y, primary_scaler=primary_scaler, sample_weight=sample_weight
+        )
         self.primary_residual = np.subtract(self.primary_prediction, y)
         self._fit_secondary_model(X, self.primary_residual, sample_weight=sample_weight)
 
@@ -55,7 +58,7 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         self.secondary_model.fit(X, y, sample_weight=sample_weight)
 
     def predict(self, X, detail=False):
-        """[summary]
+        """Creates final predictions from primary and secondary models.
 
         Args:
             X (array-type): Input features
@@ -93,13 +96,15 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         return preds
 
     def predict_dist(self, X) -> tuple:
-        """[summary]
+        """Creates final predictions from primary and secondary models.
+            Models must be NGBoost or XGBoost-Distribution. Be careful
+            with interpretation of the secondary model variance.
 
         Args:
             X (array-like): Input features
 
         Raises:
-            Exception: Throws error if non probabilistic model used.
+            Exception: Throws error if non-probabilistic model used.
 
         Returns:
             tuple: final prediction, sd of secondary prediction
@@ -127,6 +132,7 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         y,
         tuner,
         param_distributions,
+        primary_scaler=FunctionTransformer(),
         sample_weight=None,
         primary_fit_params=None,
         secondary_fit_params=None,
@@ -140,6 +146,7 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
             y ([type]): [description]
             tuner ([type]): [description]
             param_distributions ([type]): [description]
+            primary_scaler (FunctionTransformer): Scaling function from sklearn. Defaults to FunctionTransformer().
             sample_weight ([type], optional): [description]. Defaults to None.
             primary_fit_params ([type], optional): [description]. Defaults to None.
             secondary_fit_params ([type], optional): [description]. Defaults to None.
@@ -159,7 +166,13 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         ) and sample_weight is not None:
             raise Exception("Conflicting sample weights.")
 
-        self._fit_primary_model(X, y, sample_weight=sample_weight, **primary_fit_params)
+        self._fit_primary_model(
+            X,
+            y,
+            primary_scaler=primary_scaler,
+            sample_weight=sample_weight,
+            **primary_fit_params
+        )
         self._tune_secondary_model(
             tuner,
             param_distributions,
