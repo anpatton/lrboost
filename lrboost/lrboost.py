@@ -67,7 +67,8 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
             np.array: If detail=False just final predictions.
         """
         check_is_fitted(self)
-        primary_prediction = self.primary_model.predict(X)
+        X_scaled = self.primary_scaler.transform(X)
+        primary_prediction = self.primary_model.predict(X_scaled)
 
         if self.secondary_type == "NGBRegressor":
             secondary_prediction = self.secondary_model.pred_dist(X).loc
