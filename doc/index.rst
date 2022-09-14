@@ -41,7 +41,7 @@ LRBoostRegressor defaults to ``sklearn.linear_model.RidgeCV()`` and ``sklearn.en
    >>> 0.512
    >>> 0.933
 
-The linear and non-linear models are both fit in the ``fit()`` method and used to then predict on any new data. Because lrboost is a very slightly modified scklearn class, you can hyperparameter tune the tree model as you would normally.
+The linear and non-linear models are both fit in the ``fit()`` method and used to then predict on any new data. Because lrboost is a very slightly modified scikit-learn class, you can hyperparameter tune the tree model as you would normally.
 
 * ``predict(X)`` returns an array-like of final predictions with an option for ``predict(X, detail=True)`` 
 * ``predict_dist(X)`` provides probabilistic predictions associated with ``NGBoost`` or ``XGBoost-Distribution`` as the non-linear estimators.
