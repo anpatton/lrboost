@@ -1,7 +1,6 @@
 .. lrboost documentation master file, created by
    sphinx-quickstart on Mon Jan 4 14:44:12 2022.
 
-
 .. image:: images/lrboost.png
    :width: 600
 

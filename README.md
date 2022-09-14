@@ -1,4 +1,4 @@
-<img src=https://github.com/anpatton/lrboost/blob/main/doc/images/lrboost.png width=300>
+<img src=https://github.com/anpatton/lrboost/tree/main/doc/images/lrboost.png width=300>
 
 [![Documentation Status](https://readthedocs.org/projects/lrboost/badge/?version=latest)](https://lrboost.readthedocs.org)
 
