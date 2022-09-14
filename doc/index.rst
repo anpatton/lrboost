@@ -1,11 +1,12 @@
 .. lrboost documentation master file, created by
    sphinx-quickstart on Mon Jan 4 14:44:12 2022.
 
-Welcome to lrboost's documentation!
-============================================
 
 .. image:: images/lrboost.png
    :width: 600
+
+Welcome to lrboost's documentation!
+============================================
 
 lrboost is an scikit-learn compatible simple stacking protocol for prediction. 
 Additional utilities for machine learning are also included!
@@ -19,9 +20,6 @@ Additional utilities for machine learning are also included!
 
 Getting Started
 -------------------------------------
-
-.. image:: images/lrboost.png
-   :width: 600
 
 LRBoostRegressor works in three steps.
 
