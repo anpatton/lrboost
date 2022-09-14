@@ -73,7 +73,7 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         X_scaled = self.primary_scaler.transform(X)
         primary_prediction = self.primary_model.predict(X_scaled)
 
-        if self.secondary_type == "NGBRegressor":
+        if self.secondary_type in ["NGBRegressor", "RONGBA"]:
             secondary_prediction = self.secondary_model.pred_dist(X).loc
         elif self.secondary_type == "XGBDistribution":
             secondary_prediction = self.secondary_model.predict(X).loc
@@ -111,12 +111,12 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         """
         check_is_fitted(self)
 
-        if not self.secondary_type in ["NGBRegressor", "XGBDistribution"]:
+        if not self.secondary_type in ["NGBRegressor", "XGBDistribution", 'RONGBA']:
             raise Exception(
-                "predict_dist() method requires an NGboostRegressor or XGBDistribution object"
+                "predict_dist() method requires an NGboostRegressor, RONGBA, or XGBDistribution object"
             )
 
-        if self.secondary_type == "NGBRegressor":
+        if self.secondary_type in ["NGBRegressor", "RONGBA"]:
             preds = self.secondary_model.pred_dist(X)
             final_prediction = np.add(preds.loc, self.primary_model.predict(X))
             return final_prediction, preds.scale
