@@ -4,7 +4,11 @@
 Welcome to lrboost's documentation!
 ============================================
 
-lrboost is an scikit-learn compatible simple stacking protocol for prediction. Additional utilities for machine learning are also included!
+.. image:: images/lrboost.png
+   :width: 600
+
+lrboost is an scikit-learn compatible simple stacking protocol for prediction. 
+Additional utilities for machine learning are also included!
 
 .. toctree::
    :maxdepth: 2
