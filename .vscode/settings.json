@@ -1,5 +1,7 @@
 {
     "restructuredtext.preview.sphinx.disabled": true,
     "restructuredtext.linter.disabled": true,
-    "restructuredtext.confPath": "${workspaceFolder}/doc"
+    "restructuredtext.confPath": "${workspaceFolder}/doc",
+    "restructuredtext.languageServer.disabled": true,
+    "esbonio.sphinx.confDir": "${workspaceFolder}/doc"
 }

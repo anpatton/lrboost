@@ -74,3 +74,4 @@ target/
 /manuscript
 
 dev.ipynb
+.Rproj.user
