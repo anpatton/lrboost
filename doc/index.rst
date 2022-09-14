@@ -4,6 +4,9 @@
 Welcome to lrboost's documentation!
 ============================================
 
+.. image:: images/lrboost.png
+   :width: 600
+
 lrboost is an scikit-learn compatible simple stacking protocol for prediction.
 
 .. toctree::
