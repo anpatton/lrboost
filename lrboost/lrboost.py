@@ -4,7 +4,7 @@ from sklearn.linear_model import RidgeCV
 from sklearn.utils.validation import check_is_fitted
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.preprocessing import FunctionTransformer
-from typing import Dict
+from sklearn.pipeline import make_pipeline
 
 
 class LRBoostRegressor(RegressorMixin, BaseEstimator):
@@ -49,11 +49,17 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         return self
 
     def _fit_primary_model(self, X, y, primary_scaler, sample_weight=None):
-        X_scaled = primary_scaler.fit_transform(X)
-        self.primary_model.fit(X_scaled, y, sample_weight=sample_weight)
-        self.primary_prediction = self.primary_model.predict(X_scaled)
+        self.primary_pipeline = make_pipeline(primary_scaler, self.primary_model)
+        #TODO pass in sample weights to non-specific pipeline
+        self.primary_pipeline = self.primary_pipeline.fit(X, y)
+        #X_scaled = primary_scaler.fit_transform(X)
+        #self.primary_model.fit(X_scaled, y, sample_weight=sample_weight)
+        self.primary_prediction = self.primary_pipeline.predict(X)
         self.primary_scaler = primary_scaler
-
+        #self.linear_model = make_pipeline(
+        #    StandardScaler(), RidgeCV(alphas=np.logspace(-3, 3))
+        #).fit(X, y, ridgecv__sample_weight=sample_weight)
+        
     def _fit_secondary_model(self, X, y, sample_weight=None):
         self.secondary_model.fit(X, y, sample_weight=sample_weight)
 
