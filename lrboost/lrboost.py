@@ -52,11 +52,7 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         self.primary_pipeline = make_pipeline(primary_scaler, self.primary_model)
         #TODO pass in sample weights to non-specific pipeline
         self.primary_pipeline = self.primary_pipeline.fit(X, y)
-        #X_scaled = primary_scaler.fit_transform(X)
-        #self.primary_model.fit(X_scaled, y, sample_weight=sample_weight)
         self.primary_prediction = self.primary_pipeline.predict(X)
-        self.primary_scaler = primary_scaler
-        #self.linear_model = make_pipeline(
         #    StandardScaler(), RidgeCV(alphas=np.logspace(-3, 3))
         #).fit(X, y, ridgecv__sample_weight=sample_weight)
         
@@ -76,8 +72,8 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
             np.array: If detail=False just final predictions.
         """
         check_is_fitted(self)
-        X_scaled = self.primary_scaler.transform(X)
-        primary_prediction = self.primary_model.predict(X_scaled)
+        #X_scaled = self.primary_scaler.transform(X)
+        primary_prediction = self.primary_pipeline.predict(X)
 
         if self.secondary_type in ["NGBRegressor", "RONGBA"]:
             secondary_prediction = self.secondary_model.pred_dist(X).loc
