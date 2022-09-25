@@ -1,221 +1,54 @@
 import numpy as np
+from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.linear_model import RidgeCV
-from sklearn.utils.validation import check_is_fitted
-from sklearn.base import BaseEstimator, RegressorMixin
-from sklearn.preprocessing import FunctionTransformer
+from sklearn.utils.validation import check_is_fitted, _check_sample_weight, has_fit_parameter
 from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
+DEFAULT_PRIMARY_MODEL = make_pipeline(StandardScaler(), RidgeCV(alphas=np.logspace(-3, 3)))
+DEFAULT_SECONDARY_MODEL = HistGradientBoostingRegressor(
+    early_stopping=True, max_iter=1_000, random_state=42
+)
 
 class LRBoostRegressor(RegressorMixin, BaseEstimator):
     def __init__(self, primary_model=None, secondary_model=None):
-        if primary_model is None:
-            primary_model = RidgeCV()
+        self.default_primary = primary_model is None
+        self.default_secondary = secondary_model is None
 
-        if secondary_model is None:
-            secondary_model = HistGradientBoostingRegressor()
+        if self.default_primary:
+            primary_model = DEFAULT_PRIMARY_MODEL
+        if self.default_secondary:
+            secondary_model = DEFAULT_SECONDARY_MODEL
 
         self.primary_model = primary_model
         self.secondary_model = secondary_model
-        self.secondary_type = type(self.secondary_model).__name__
 
-    def __sklearn_is_fitted__(self):
-        """Internal sklearn helper that indicates the object has been fitted
-
-        Returns:
-            bool: True
-        """
-        return True
-
-    def fit(self, X, y, sample_weight=None, primary_scaler=FunctionTransformer()):
-        """Fits both the primary and secondary estimator and returns fitted LRBoostRegressor
-
-        Args:
-            X (array-like): Input features
-            y (array-like): Raw target
-            sample_weight (array-like, optional): Sample weights for estimators.
-                Only accepts one weight for both. Defaults to None.
-            primary_scaler (FunctionTransformer): Scaling function from sklearn. Defaults to FunctionTransformer().
-
-        Returns:
-            self: Fitted LRBoostRegressor
-        """
-        self._fit_primary_model(
-            X, y, primary_scaler=primary_scaler, sample_weight=sample_weight
-        )
-        self.primary_residual = np.subtract(self.primary_prediction, y)
-        self._fit_secondary_model(X, self.primary_residual, sample_weight=sample_weight)
-
-        return self
-
-    def _fit_primary_model(self, X, y, primary_scaler, sample_weight=None):
-        self.primary_pipeline = make_pipeline(primary_scaler, self.primary_model)
-        #TODO pass in sample weights to non-specific pipeline
-        self.primary_pipeline = self.primary_pipeline.fit(X, y)
-        self.primary_prediction = self.primary_pipeline.predict(X)
-        #    StandardScaler(), RidgeCV(alphas=np.logspace(-3, 3))
-        #).fit(X, y, ridgecv__sample_weight=sample_weight)
-        
-    def _fit_secondary_model(self, X, y, sample_weight=None):
-        self.secondary_model.fit(X, y, sample_weight=sample_weight)
-
-    def predict(self, X, detail=False):
-        """Creates final predictions from primary and secondary models.
-
-        Args:
-            X (array-type): Input features
-            detail (bool, optional):  Flag to include primary and secondary predictions.
-                Defaults to False.
-
-        Returns:
-            Dict: If detail=True with primary, secondary, and final predictions.
-            np.array: If detail=False just final predictions.
-        """
-        check_is_fitted(self)
-        #X_scaled = self.primary_scaler.transform(X)
-        primary_prediction = self.primary_pipeline.predict(X)
-
-        if self.secondary_type in ["NGBRegressor", "RONGBA"]:
-            secondary_prediction = self.secondary_model.pred_dist(X).loc
-        elif self.secondary_type == "XGBDistribution":
-            secondary_prediction = self.secondary_model.predict(X).loc
-        else:
-            secondary_prediction = self.secondary_model.predict(X)
-
-        if detail:
-
-            preds = {
-                "primary_prediction": primary_prediction,
-                "secondary_prediction": secondary_prediction,
-                "final_prediction": np.subtract(
-                    primary_prediction, secondary_prediction
-                ),
-            }
-
-        else:
-            preds = np.subtract(primary_prediction, secondary_prediction)
-
-        return preds
-
-    def predict_dist(self, X) -> tuple:
-        """Creates final predictions from primary and secondary models.
-            Models must be NGBoost or XGBoost-Distribution. Be careful
-            with interpretation of the secondary model variance.
-
-        Args:
-            X (array-like): Input features
-
-        Raises:
-            Exception: Throws error if non-probabilistic model used.
-
-        Returns:
-            tuple: final prediction, sd of secondary prediction
-        """
-        check_is_fitted(self)
-
-        if not self.secondary_type in ["NGBRegressor", "XGBDistribution", 'RONGBA']:
-            raise Exception(
-                "predict_dist() method requires an NGboostRegressor, RONGBA, or XGBDistribution object"
-            )
-
-        if self.secondary_type in ["NGBRegressor", "RONGBA"]:
-            preds = self.secondary_model.pred_dist(X)
-            final_prediction = np.add(preds.loc, self.primary_model.predict(X))
-            return final_prediction, preds.scale
-
-        if self.secondary_type == "XGBDistribution":
-            preds = self.secondary_model.predict(X)
-            final_prediction = np.add(preds.loc, self.primary_model.predict(X))
-            return final_prediction, preds.scale
-
-    def fit_and_tune(
-        self,
-        X,
-        y,
-        tuner,
-        param_distributions,
-        primary_scaler=FunctionTransformer(),
-        sample_weight=None,
-        primary_fit_params=None,
-        secondary_fit_params=None,
-        *tuner_args,
-        **tuner_kwargs
-    ):
-        """[summary]
-
-        Args:
-            X ([type]): [description]
-            y ([type]): [description]
-            tuner ([type]): [description]
-            param_distributions ([type]): [description]
-            primary_scaler (FunctionTransformer): Scaling function from sklearn. Defaults to FunctionTransformer().
-            sample_weight ([type], optional): [description]. Defaults to None.
-            primary_fit_params ([type], optional): [description]. Defaults to None.
-            secondary_fit_params ([type], optional): [description]. Defaults to None.
-
-        Raises:
-            Exception: [description]
-
-        Returns:
-            [type]: [description]
-        """
+    def fit(self, X, y, primary_fit_params=None, secondary_fit_params=None):
         if primary_fit_params is None:
             primary_fit_params = {}
-
-        if (
-            "sample_weight" in primary_fit_params
-            or "sample_weight" in secondary_fit_params
-        ) and sample_weight is not None:
-            raise Exception("Conflicting sample weights.")
-
-        self._fit_primary_model(
-            X,
-            y,
-            primary_scaler=primary_scaler,
-            sample_weight=sample_weight,
-            **primary_fit_params
-        )
-        self._tune_secondary_model(
-            tuner,
-            param_distributions,
-            X,
-            y,
-            *tuner_args,
-            sample_weight=sample_weight,
-            fit_params=secondary_fit_params,
-            **tuner_kwargs
-        )
-        return self
-
-    def _tune_secondary_model(
-        self,
-        tuner,
-        param_distributions,
-        X,
-        y,
-        *tuner_args,
-        sample_weight=None,
-        secondary_fit_params=None,
-        **tuner_kwargs
-    ):
-        """[summary]
-
-        Args:
-            tuner ([type]): [description]
-            param_distributions ([type]): [description]
-            X ([type]): [description]
-            y ([type]): [description]
-            sample_weight ([type], optional): [description]. Defaults to None.
-            secondary_fit_params ([type], optional): [description]. Defaults to None.
-        """
-        check_is_fitted(self.primary_model)
         if secondary_fit_params is None:
             secondary_fit_params = {}
 
-        self.secondary_model = (
-            tuner(
-                self.secondary_model, param_distributions, *tuner_args, **tuner_kwargs
-            )
-            .fit(X, y, sample_weight=sample_weight, **secondary_fit_params)
-            .best_estimator_
+        self._fit_primary_model(
+            X, y, **primary_fit_params
         )
+        primary_residual = y - self.primary_prediction
+        self._fit_secondary_model(X, primary_residual, **secondary_fit_params)
+        self.fitted_ = True
+        return self
+
+    def _fit_primary_model(self, X, y, **fit_params):
+       
+        self.primary_model.fit(X, y, **fit_params)
+        self.primary_prediction = self.primary_model.predict(X)
+
+    def _fit_secondary_model(self, X, y, **fit_params):
+        self.secondary_model.fit(X, y, **fit_params)
+
+    def predict(self, X):
+        check_is_fitted(self)
+
+        primary_prediction = self.primary_model.predict(X)
+        secondary_prediction = self.secondary_model.predict(X)
+        return primary_prediction + secondary_prediction
