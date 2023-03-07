@@ -56,8 +56,7 @@ Any sklearn compatible estimator can be used with lrboost, and you can unpack kw
                      "cv": 5}
     >>> rf_args = {"n_estimators": 50, 
                   "n_jobs": -1}
-    >>> lrb = LRBoostRegressor(linear_model=RidgeCV(**ridge_args),
-                        non_linear_model=RandomForestRegressor(**rf_args))
+    >>> lrb = LRBoostRegressor(primary_model=RidgeCV(**ridge_args), secondary_model=RandomForestRegressor(**rf_args))
     >>> lrb = LRBoostRegressor.fit(X, y)
     >>> predictions = lrb.predict(X)
 
