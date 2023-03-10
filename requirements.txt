@@ -1,4 +1,5 @@
+ngboost
+plotnine
 numpy
 scipy
 scikit-learn
-ngboost
