@@ -34,4 +34,4 @@ print(lrb.score(X, y)) #R2
 
 [More detailed documentation can be found here!](https://lrboost.readthedocs.io/en/latest/) 
 
-*[Andrew Patton](https://twitter.com/anpatt7), [Kostya Medvedovsky](https://twitter.com/kmedved), and [Nathan Walker](https://twitter.com/bbstats)*
+*[Andrew Patton](https://twitter.com/anpatt7), [Nathan Walker](https://twitter.com/bbstats), and [Kostya Medvedovsky](https://twitter.com/kmedved)*
