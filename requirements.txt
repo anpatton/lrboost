@@ -1,5 +1,4 @@
-ngboost
-properscoring
 numpy
 scipy
 scikit-learn
+ngboost

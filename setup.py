@@ -21,7 +21,7 @@ URL = 'https://github.com/anpatton/lrboost'
 LICENSE = 'new BSD'
 DOWNLOAD_URL = 'https://github.com/anpatton/lrboost'
 VERSION = __version__
-INSTALL_REQUIRES = ['numpy', 'scipy', 'scikit-learn']
+INSTALL_REQUIRES = ['numpy', 'scipy', 'scikit-learn', 'ngboost']
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'License :: OSI Approved',
