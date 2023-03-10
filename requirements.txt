@@ -1,5 +1,5 @@
 ngboost
-plotnine
+properscoring
 numpy
 scipy
 scikit-learn
