@@ -15,8 +15,6 @@ from sklearn.utils.validation import (
 from sklearn.pipeline import make_pipeline
 from ngboost import NGBRegressor
 
-X, y = load_iris(return_X_y=True)
-
 DEFAULT_PRIMARY_MODEL = make_pipeline(
     StandardScaler(), RidgeCV(alphas=np.logspace(-3, 3))
 )

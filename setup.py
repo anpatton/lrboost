@@ -11,17 +11,20 @@ ver_file = os.path.join('lrboost', '_version.py')
 with open(ver_file) as f:
     exec(f.read())
 
+with open('requirements.txt', 'r') as f:
+    required = f.read().splitlines()
+
 DISTNAME = 'lrboost'
 DESCRIPTION = 'Linear Residual Boosting compatible with scikit-learn.'
 with codecs.open('README.md', encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()
-MAINTAINER = 'A. Patton, K. Medvedovsky'
-MAINTAINER_EMAIL = 'apatton@gmail.com, bibigon@gmail.com'
+MAINTAINER = 'A. Patton, N. Walker, K. Medvedovsky'
+MAINTAINER_EMAIL = 'anpatt7@gmail.com, bibigon@gmail.com'
 URL = 'https://github.com/anpatton/lrboost'
 LICENSE = 'new BSD'
 DOWNLOAD_URL = 'https://github.com/anpatton/lrboost'
 VERSION = __version__
-INSTALL_REQUIRES = ['numpy', 'scipy', 'scikit-learn']
+INSTALL_REQUIRES = required
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'License :: OSI Approved',
