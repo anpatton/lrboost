@@ -51,11 +51,22 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         self.primary_model = primary_model
         self.secondary_model = secondary_model
 
-    def fit(self, X, y, primary_fit_params=None, secondary_fit_params=None):
-        if primary_fit_params is None:
+    def fit(self, X, y, **fit_params):
+        if fit_params is None:
             primary_fit_params = {}
-        if secondary_fit_params is None:
             secondary_fit_params = {}
+        # any kwarg with prefix "primary_model__" will be passed to primary model
+        # any kwarg with prefix "secondary_model__" will be passed to secondary model
+        primary_fit_params = {
+            k.replace("primary_model__", ""): v
+            for k, v in fit_params.items()
+            if k.startswith("primary_model__")
+        }
+        secondary_fit_params = {
+            k.replace("secondary_model__", ""): v
+            for k, v in fit_params.items()
+            if k.startswith("secondary_model__")
+        }
 
         self._fit_primary_model(X, y, **primary_fit_params)
         primary_residual = y - self.primary_prediction
