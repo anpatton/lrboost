@@ -1,5 +1,6 @@
 from typing import Dict
 import numpy as np
+import pandas as pd
 from sklearn.datasets import load_iris
 from sklearn.linear_model import RidgeCV
 from sklearn.preprocessing import StandardScaler
@@ -39,6 +40,15 @@ DEFAULT_SECONDARY_MODEL_DIST = NGBRegressor(
 )
 
 
+def lrb_validate_X(X, feature_set):
+    if feature_set is not None:
+        if not isinstance(X, pd.DataFrame):
+            raise ValueError("If manually setting features per model, X must be a pandas DataFrame.")
+        return X.loc[:, feature_set]
+    else:
+        return X
+
+
 class LRBoostRegressor(RegressorMixin, BaseEstimator):
     def __init__(self, primary_model=None, secondary_model=None):
         if primary_model is None:
@@ -72,18 +82,35 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         self.fitted_ = True
         return self
 
-    def _fit_primary_model(self, X, y, **fit_params):
+    def _validate_primary_X(self, X):
+        return lrb_validate_X(X, self.primary_features_)
+    
+    def _validate_secondary_X(self, X):
+        return lrb_validate_X(X, self.secondary_features_)
 
-        self.primary_model.fit(X, y, **fit_params)
-        self.primary_prediction = self.primary_model.predict(X)
+    def _fit_primary_model(self, X, y, **fit_params):
+        self.primary_features_ = fit_params.pop('features', None)
+
+        _X = self._validate_primary_X(X)
+        self.primary_model.fit(_X, y, **fit_params)
+
+        self.primary_prediction = self.primary_model.predict(_X)
+        
 
     def _fit_secondary_model(self, X, y, **fit_params):
-        self.secondary_model.fit(X, y, **fit_params)
+        self.secondary_features_ = fit_params.pop('features', None)
+        
+        _X = self._validate_secondary_X(X)
+        self.secondary_model.fit(_X, y, **fit_params)
 
     def predict(self, X, detail=False):
         check_is_fitted(self)
-        primary_prediction = self.primary_model.predict(X)
-        secondary_prediction = self.secondary_model.predict(X)
+
+        primary_X = self._validate_primary_X(X)
+        secondary_X = self._validate_secondary_X(X)
+
+        primary_prediction = self.primary_model.predict(primary_X)
+        secondary_prediction = self.secondary_model.predict(secondary_X)
         final_prediction = primary_prediction + secondary_prediction
         if detail:
             prediction_dict = {
