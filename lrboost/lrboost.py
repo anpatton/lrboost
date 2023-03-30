@@ -1,5 +1,6 @@
 from typing import Dict
 import numpy as np
+import pandas as pd
 from sklearn.datasets import load_iris
 from sklearn.linear_model import RidgeCV
 from sklearn.preprocessing import StandardScaler
@@ -39,6 +40,21 @@ DEFAULT_SECONDARY_MODEL_DIST = NGBRegressor(
 )
 
 
+def _lrb_validate_X(X, feature_set):
+    if feature_set is not None:
+        if not isinstance(X, pd.DataFrame):
+            raise ValueError("If manually setting features per model, X must be a pandas DataFrame.")
+        return X.loc[:, feature_set]
+    else:
+        return X
+
+def _pull_out_prefixed_keys(d, prefix):
+    return {
+            k.replace(prefix, ""): v
+            for k, v in d.items()
+            if k.startswith(prefix)
+        }
+
 class LRBoostRegressor(RegressorMixin, BaseEstimator):
     def __init__(self, primary_model=None, secondary_model=None):
         if primary_model is None:
@@ -55,35 +71,45 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
             secondary_fit_params = {}
         # any kwarg with prefix "primary_model__" will be passed to primary model
         # any kwarg with prefix "secondary_model__" will be passed to secondary model
-        primary_fit_params = {
-            k.replace("primary_model__", ""): v
-            for k, v in fit_params.items()
-            if k.startswith("primary_model__")
-        }
-        secondary_fit_params = {
-            k.replace("secondary_model__", ""): v
-            for k, v in fit_params.items()
-            if k.startswith("secondary_model__")
-        }
+        primary_fit_params = _pull_out_prefixed_keys(fit_params, "primary_model__")
+        secondary_fit_params = _pull_out_prefixed_keys(fit_params, "secondary_model__")
 
         self._fit_primary_model(X, y, **primary_fit_params)
         primary_residual = y - self.primary_prediction
+
         self._fit_secondary_model(X, primary_residual, **secondary_fit_params)
         self.fitted_ = True
         return self
 
-    def _fit_primary_model(self, X, y, **fit_params):
+    def _validate_primary_X(self, X):
+        return _lrb_validate_X(X, self.primary_features_)
+    
+    def _validate_secondary_X(self, X):
+        return _lrb_validate_X(X, self.secondary_features_)
 
-        self.primary_model.fit(X, y, **fit_params)
-        self.primary_prediction = self.primary_model.predict(X)
+    def _fit_primary_model(self, X, y, **fit_params):
+        self.primary_features_ = fit_params.pop('features', None)
+
+        _X = self._validate_primary_X(X)
+        self.primary_model.fit(_X, y, **fit_params)
+
+        self.primary_prediction = self.primary_model.predict(_X).reshape(-1,1)
+        
 
     def _fit_secondary_model(self, X, y, **fit_params):
-        self.secondary_model.fit(X, y, **fit_params)
+        self.secondary_features_ = fit_params.pop('features', None)
+        
+        _X = self._validate_secondary_X(X)
+        self.secondary_model.fit(_X, y, **fit_params)
 
     def predict(self, X, detail=False):
         check_is_fitted(self)
-        primary_prediction = self.primary_model.predict(X)
-        secondary_prediction = self.secondary_model.predict(X)
+
+        primary_X = self._validate_primary_X(X)
+        secondary_X = self._validate_secondary_X(X)
+
+        primary_prediction = self.primary_model.predict(primary_X).reshape(-1,1)
+        secondary_prediction = self.secondary_model.predict(secondary_X).reshape(-1,1)
         final_prediction = primary_prediction + secondary_prediction
         if detail:
             prediction_dict = {
