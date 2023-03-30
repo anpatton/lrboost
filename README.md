@@ -2,6 +2,8 @@
 
 [![Documentation Status](https://readthedocs.org/projects/lrboost/badge/?version=latest)](https://lrboost.readthedocs.org)
 
+[![PyPI version](https://badge.fury.io/py/lrboost.svg)](https://badge.fury.io/py/lrboost)
+
 lrboost is a [sckit-learn](https://scikit-learn.org/) compatible package for linear residual boosting. lrboost uses a linear estimator to first remove any linear trends from the data, and then uses a separate non-linear estimator to model the remaining non-linear trends. We find that extrapolation tasks or data with linear and non-linear components are the best use cases. Not every modeling task will benefit from lrboost, but we use this in our own work and wanted to share something that made it easy to use.  
 
 For a stable version, install using ``pip``:
