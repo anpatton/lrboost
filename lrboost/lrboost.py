@@ -93,7 +93,7 @@ class LRBoostRegressor(RegressorMixin, BaseEstimator):
         _X = self._validate_primary_X(X)
         self.primary_model.fit(_X, y, **fit_params)
 
-        self.primary_prediction = self.primary_model.predict(_X).reshape(-1)
+        self.primary_prediction = self.primary_model.predict(_X).reshape(y.shape)
         
 
     def _fit_secondary_model(self, X, y, **fit_params):
